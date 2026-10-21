@@ -8,6 +8,11 @@ const { config: tsconfig } = ts.readConfigFile(
 );
 const paths = tsconfig?.compilerOptions?.paths ?? {};
 
+const moduleNameMapper: Record<string, string | string[]> = {
+  '^(\\.{1,2}/.*)\\.js$': '$1',
+  ...(pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }) ?? {}),
+};
+
 const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
@@ -16,7 +21,7 @@ const config: Config = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  moduleNameMapper: pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }),
+  moduleNameMapper,
   collectCoverageFrom: [
     'src/**/*.(t|j)s',
     'libs/**/*.(t|j)s',

@@ -8,6 +8,7 @@ import { ProblemDetailsFilter } from './../src/common/errors/problem-details.fil
 import { validationExceptionFactory } from './../src/common/errors/validation';
 import { noStoreMiddleware } from './../src/common/http/cache-control.middleware';
 import { PinoLoggerService } from './../src/common/logging/pino-logger.service';
+import { PrismaService } from './../src/infrastructure/database/prisma.service';
 
 describe('runtime (e2e)', () => {
   let app: NestExpressApplication;
@@ -15,7 +16,10 @@ describe('runtime (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue({ ping: async () => undefined })
+      .compile();
 
     app = moduleFixture.createNestApplication<NestExpressApplication>({ bodyParser: false });
     app.setGlobalPrefix('api/v1', {
@@ -51,11 +55,13 @@ describe('runtime (e2e)', () => {
     expect(response.headers['cache-control']).toContain('no-store');
   });
 
-  it('readiness tanpa indikator mengembalikan ok', async () => {
+  it('readiness melaporkan indikator database', async () => {
     const response = await request(app.getHttpServer()).get('/readyz').expect(200);
 
     expect(response.body.status).toBe('ok');
-    expect(response.body.checks).toEqual([]);
+    expect(response.body.checks).toEqual([
+      expect.objectContaining({ name: 'postgres', status: 'up', critical: true }),
+    ]);
   });
 
   it('rute tidak dikenal memakai problem details', async () => {

@@ -10,14 +10,14 @@
   },
   "packageManager": "pnpm@12.14.0",
   "scripts": {
-    "build": "nest build && tsc-alias -p tsconfig.build.json",
+    "build": "prisma generate && nest build && tsc-alias -p tsconfig.build.json",
     "start": "node --env-file-if-exists=.env ./node_modules/@nestjs/cli/bin/nest.js start",
     "start:dev": "node --env-file-if-exists=.env ./node_modules/@nestjs/cli/bin/nest.js start --watch",
     "start:debug": "node --env-file-if-exists=.env ./node_modules/@nestjs/cli/bin/nest.js start --debug --watch",
     "start:prod": "node --enable-source-maps --env-file-if-exists=.env dist/main.js",
-    "lint": "oxlint --type-aware --deny-warnings src test",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "oxlint --type-aware --deny-warnings src test prisma",
+    "typecheck": "prisma generate && tsc --noEmit -p tsconfig.json",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"prisma/**/*.ts\"",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
     "test:cov": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage",
@@ -25,6 +25,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
+    "prisma:seed": "tsx prisma/seed.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
@@ -36,6 +37,7 @@
     "@nestjs/platform-express": "12.2.0",
     "@nestjs/swagger": "12.0.2",
     "@nestjs/throttler": "6.7.1",
+    "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "argon2": "0.45.1",
     "bullmq": "6.3.18",
@@ -69,13 +71,7 @@
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.0",
     "typescript": "6.0.2"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "argon2",
-      "prisma"
-    ]
   }
 }

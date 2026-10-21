@@ -1,0 +1,10 @@
+process.env.NODE_ENV = 'test';
+process.env.DATABASE_URL = 'postgresql://test:test@127.0.0.1:5432/jaga_test';
+process.env.REDIS_URL = 'redis://127.0.0.1:6379';
+process.env.JWT_ACCESS_SECRET = 'test-access-secret-0000000000000000000000';
+process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-000000000000000000000';
+process.env.ML_SERVICE_TOKEN = 'test-ml-service-token-0000000000';
+process.env.ML_SERVICE_URL = 'http://127.0.0.1:8000';
+process.env.ENCRYPTION_KEY = 'a'.repeat(64);
+process.env.CORS_ORIGINS = 'http://localhost:5173';
+process.env.LOG_LEVEL = 'error';
